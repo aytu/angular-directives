@@ -1,14 +1,16 @@
-import { Component } from '@angular/core';
+import { Component,OnInit } from '@angular/core';
 import {AddNewItemComponent} from './addNewItemComponent';
 import {DeleteItemComponent} from './deleteItemComponent';
 import {ItemList} from './item-list';
+import {ItemListService} from './ItemListService';
+
 @Component({
   moduleId: module.id,
   selector: 'app-root',
   template: `
   <div class="body">
       <section>
-         <addNewItem (added)="addItem($event)"></addNewItem>
+         <addNewItem></addNewItem>
       </section>
       <hr>
       <section>
@@ -19,27 +21,28 @@ import {ItemList} from './item-list';
       </section>
 
       <section *ngIf="selectedItem != null">
-         <deleteItem [selectedItem]="selectedItem" (deleted)="onDelete($event)"></deleteItem>
+         <deleteItem [selectedItem]="selectedItem" (deletedItem)="onDelete($event)"></deleteItem>
       </section>
       {{title}}
   </div>
 
   `,
   styleUrls: ['app.component.css'],
-  directives:[AddNewItemComponent,DeleteItemComponent]
+  directives:[AddNewItemComponent,DeleteItemComponent],
+  providers:[ItemListService]
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
+  constructor(private _itemListService: ItemListService){ }
   itemList=new Array<ItemList>();
   selectedItem:ItemList;
-  addItem(item: ItemList){
-     this.itemList.push({name:item.name,amount:item.amount})
+  ngOnInit(){
+    this.itemList=this._itemListService.getItems();
   }
   onDelete(item:ItemList){
-    this.itemList.splice(this.itemList.indexOf(item),1);
     this.selectedItem=null;
   }
+
   onSelect(item:ItemList){
-    console.log(item);
-    this.selectedItem=item;
+      this.selectedItem=item;
   }
 }

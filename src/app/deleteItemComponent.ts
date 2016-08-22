@@ -1,5 +1,6 @@
 import {Component,EventEmitter} from '@angular/core';
 import {ItemList} from  './item-list';
+import {ItemListService} from './ItemListService';
 
 @Component({
   selector:'deleteItem',
@@ -11,14 +12,16 @@ import {ItemList} from  './item-list';
     <button (click)="onDelete()" >Delete item</button>
   `,
   inputs:['selectedItem'],
-  outputs:['deleted']
+  outputs:['deletedItem'],
+  providers:[ItemListService]
 })
 
 export class DeleteItemComponent {
+  constructor(private _itemListService:ItemListService){}
   selectedItem={name: '',amount: 0};
-  deleted=new EventEmitter<ItemList>();
-
+  deletedItem=new EventEmitter<any>();
   onDelete(){
-    this.deleted.emit(this.selectedItem);
+    this._itemListService.DeleteItem(this.selectedItem);
+    this.deletedItem.emit(null);
   }
 }
