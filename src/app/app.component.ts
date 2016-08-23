@@ -3,6 +3,7 @@ import {AddNewItemComponent} from './addNewItemComponent';
 import {DeleteItemComponent} from './deleteItemComponent';
 import {ItemList} from './item-list';
 import {ItemListService} from './ItemListService';
+import {FilterPipe} from './filter.pipe';
 
 @Component({
   moduleId: module.id,
@@ -15,8 +16,9 @@ import {ItemListService} from './ItemListService';
       <hr>
       <section>
          <h2>List</h2>
+         <p>Filter: <input type="text" #filter (keyup)="0"/></p>
          <ul>
-           <li *ngFor="let item of itemList" (click)="onSelect(item)">{{item.name}} ({{item.amount}})</li>
+           <li *ngFor="let item of itemList | myfilter:filter.value" (click)="onSelect(item)">{{item.name}} ({{item.amount}})</li>
          </ul>
       </section>
 
@@ -29,7 +31,8 @@ import {ItemListService} from './ItemListService';
   `,
   styleUrls: ['app.component.css'],
   directives:[AddNewItemComponent,DeleteItemComponent],
-  providers:[ItemListService]
+  providers:[ItemListService],
+  pipes:[FilterPipe]
 })
 export class AppComponent implements OnInit {
   constructor(private _itemListService: ItemListService){ }
